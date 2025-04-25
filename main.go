@@ -19,6 +19,7 @@ func main() {
 	router.MaxMultipartMemory = 10 << 20 // 10 MiB
 
 	router.POST("/upload", localstorage.HandleUpload)
+  router.GET("/uploads/:filename", localstorage.HandleGetFile)
 
 	log.Println("Server running at http://localhost:8080")
 	router.Run(":8080")

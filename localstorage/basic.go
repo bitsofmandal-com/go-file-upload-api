@@ -32,3 +32,11 @@ func HandleUpload(c *gin.Context) {
 		"filepath": outPath,
 	})
 }
+
+func HandleGetFile(c *gin.Context) {
+  filename := c.Param("filename")
+  filePath := filepath.Join(UploadDir, filename)
+
+  // Serve the file
+  c.File(filePath)
+}
