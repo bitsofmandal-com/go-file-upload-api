@@ -24,6 +24,12 @@ var allowedMIMEs = map[string]struct{}{
 }
 
 func HandleUpload(c *gin.Context) {
+	// NOOB Mistake 1: Not checking header for multipart/form-data
+	if c.Request.Header.Get("Content-Type") != "multipart/form-data" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Content-Type must be multipart/form-data"})
+		return
+	}
+
 	// Parse the multipart form
 	file, header, err := c.Request.FormFile("file")
 	if err != nil {
@@ -38,7 +44,7 @@ func HandleUpload(c *gin.Context) {
 		return
 	}
 
-	// NOOB Mistake 3: Not blocking unsupported file types
+	// NOOB Mistake 2: Not blocking unsupported file types
 	// Only allow images and plain text (for example)
 	filetype, err := detectMIME(file)
 	if err != nil {
@@ -55,7 +61,7 @@ func HandleUpload(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to reset file reader"})
 		return
 	}
-	// NOOB Mistake 2: Not using a proper file name sanitization
+	// NOOB Mistake 3: Not using a proper file name sanitization
 	filename := filepath.Base(header.Filename) // basic sanitization
 	// NOOB Mistake 4: Not using a unique file name
 	// Save with a UUID filename to avoid name collisions
