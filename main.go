@@ -15,7 +15,9 @@ func main() {
 		log.Fatalf("failed to create upload dir: %v", err)
 	}
 	router := gin.Default()
-	// Max upload size: 10MB
+
+	// NOOB Mistake 1: Not setting the max upload size
+  // Max upload size: 10MB
 	router.MaxMultipartMemory = 10 << 20 // 10 MiB
 
 	router.POST("/upload", localstorage.HandleUpload)
