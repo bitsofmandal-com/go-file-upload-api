@@ -8,7 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-
 func main() {
 	// Ensure upload directory exists
 	if err := os.MkdirAll(localstorage.UploadDir, os.ModePerm); err != nil {
@@ -17,11 +16,11 @@ func main() {
 	router := gin.Default()
 
 	// NOOB Mistake 1: Not setting the max upload size
-  // Max upload size: 10MB
+	// Max upload size: 10MB
 	router.MaxMultipartMemory = 10 << 20 // 10 MiB
 
 	router.POST("/upload", localstorage.HandleUpload)
-  router.GET("/uploads/:filename", localstorage.HandleGetFile)
+	router.GET("/uploads/:filename", localstorage.HandleGetFile)
 
 	log.Println("Server running at http://localhost:8080")
 	router.Run(":8080")

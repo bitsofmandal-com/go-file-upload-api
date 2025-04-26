@@ -6,16 +6,16 @@ import (
 	"mime/multipart"
 	"net/http"
 	"path/filepath"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
 
-const (
-	UploadDir       = "./uploads"
-	MaxUploadSize   = 10 << 20 // 10 MiB
-)
+const UploadDir = "./uploads"
 
+// Use a map to define allowed MIME types for better performance
+// and to avoid using a switch statement
 var allowedMIMEs = map[string]struct{}{
 	"image/jpeg":      {},
 	"image/png":       {},
@@ -62,7 +62,9 @@ func HandleUpload(c *gin.Context) {
 		return
 	}
 	// NOOB Mistake 3: Not using a proper file name sanitization
-	filename := filepath.Base(header.Filename) // basic sanitization
+	filename := filepath.Base(header.Filename)        // basic sanitization
+	filename = filepath.Clean(filename)               // clean up the filename
+	filename = strings.ReplaceAll(filename, " ", "_") // replace spaces with underscores
 	// NOOB Mistake 4: Not using a unique file name
 	// Save with a UUID filename to avoid name collisions
 	// generate unique filename
@@ -92,11 +94,10 @@ func detectMIME(f multipart.File) (string, error) {
 	return http.DetectContentType(buffer), nil
 }
 
-
 func HandleGetFile(c *gin.Context) {
-  filename := c.Param("filename")
-  filePath := filepath.Join(UploadDir, filename)
+	filename := c.Param("filename")
+	filePath := filepath.Join(UploadDir, filename)
 
-  // Serve the file
-  c.File(filePath)
+	// Serve the file
+	c.File(filePath)
 }
