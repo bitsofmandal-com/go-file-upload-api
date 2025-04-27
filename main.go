@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/bitsofmandal-com/go-file-upload-api/localstorage"
+	"github.com/bitsofmandal-com/go-file-upload-api/s3storage"
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,6 +22,7 @@ func main() {
 
 	router.POST("/upload", localstorage.HandleUpload)
 	router.GET("/uploads/:filename", localstorage.HandleGetFile)
+	router.POST("/s3/upload", s3storage.HandleUpload)
 
 	log.Println("Server running at http://localhost:8080")
 	router.Run(":8080")
